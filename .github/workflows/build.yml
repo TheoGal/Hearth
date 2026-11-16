@@ -5,10 +5,13 @@ name: Build IPK
 on:
   push:
     branches: [main]
-    paths-ignore:
-      - 'docs/**'
-      - 'mkdocs.yml'
-      - '**.md'
+    # Everything except docs and markdown, but language files under docs/languages/packs are bundled into the app.
+    paths:
+      - '**'
+      - '!docs/**'
+      - '!mkdocs.yml'
+      - '!**.md'
+      - 'docs/languages/packs/**'
   workflow_dispatch:
 
 permissions:
