@@ -16,6 +16,11 @@ A full Greek translation of all Hearth menu texts.
 - **How it gets into the app:** Hearth's build (`scripts/gen-bundled-languages.mjs`) bundles every file in `docs/languages/packs/` into the app, so no code change was needed. This also works on TVs without root.
 - **How to use it:** Settings > System > Hearth language, then press left or right until **Ελληνικά** shows.
 - **Font:** see change 3, so Greek menus use the same font as the English ones.
+- **No "(machine translated)" label:** Hearth adds that label to bundled languages not reviewed by a native speaker. Greek is reviewed by the fork owner, so it is listed with the native-reviewed languages in [`src/lib/languages.ts`](src/lib/languages.ts):
+
+  ```ts
+  export const HUMAN_LANGUAGES: readonly string[] = ['fr', 'it', 'pl', 'pt-BR', 'th', 'el'];
+  ```
 
 ### 3. Greek letters for the menu font (Inter)
 

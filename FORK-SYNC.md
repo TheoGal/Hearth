@@ -37,6 +37,7 @@ Rules per file:
 | `src/lib/prefs.ts` | Take Hearth's new version, then re-apply fix C below. |
 | `src/lib/clockfont.ts` | Take Hearth's new version, then re-apply fix D below. |
 | `src/app.tsx` | Take Hearth's new version, then re-apply fix E below. |
+| `src/lib/languages.ts` | Take Hearth's new version, then re-apply fix F below. |
 | `src/theme/global.css` | Keep **both** versions: Hearth's lines and the lines marked `/* Fork: ... */`. Delete only the marker lines. |
 | `src/config/bundledlanguages.ts` | Take Hearth's version. |
 | `docs/languages/packs/el.json` | Only if Hearth added its own Greek: keep this fork's version. |
@@ -102,6 +103,14 @@ export function geocodeUrl (query: string, language = 'en'): string {
    ```ts
    	syncPageLanguage();
    ```
+
+### Fix F: `src/lib/languages.ts`
+
+Find the line that starts with `export const HUMAN_LANGUAGES` and add `'el'` at the end of the list, for example:
+
+```ts
+export const HUMAN_LANGUAGES: readonly string[] = ['fr', 'it', 'pl', 'pt-BR', 'th', 'el'];
+```
 
 ## 3. Check the build
 
