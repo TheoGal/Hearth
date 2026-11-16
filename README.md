@@ -15,7 +15,29 @@ A full Greek translation of all Hearth menu texts.
 - **File:** [`docs/languages/packs/el.json`](docs/languages/packs/el.json)
 - **How it gets into the app:** Hearth's build (`scripts/gen-bundled-languages.mjs`) bundles every file in `docs/languages/packs/` into the app, so no code change was needed. This also works on TVs without root.
 - **How to use it:** Settings > System > Hearth language, then press left or right until **Ελληνικά** shows.
-- **Note:** Hearth's menu font (Inter) is bundled with Latin letters only, so Greek text is drawn with the TV's own font.
+- **Font:** see change 3, so Greek menus use the same font as the English ones.
+
+### 3. Greek letters for the menu font (Inter)
+
+The original Hearth bundles its menu font, Inter, with Latin letters only, so Greek text was drawn with the TV's own font. The fork adds Inter's Greek letters, so Greek menus look the same as the English ones, at every weight (Thin to Bold).
+
+What was changed, and where:
+
+- **New file [`src/assets/inter-greek-wght.woff2`](src/assets/inter-greek-wght.woff2)** (19 KB): the Greek part of Inter, taken from [`@fontsource-variable/inter`](https://www.npmjs.com/package/@fontsource-variable/inter) 5.3.0 (`files/inter-greek-wght-normal.woff2`). It is the same Inter build (4.001) as Hearth's own Latin file, which comes from the same package. Inter's licence (SIL OFL) is already included with Hearth in `public/licenses/Inter-OFL.txt`.
+- **[`src/theme/global.css`](src/theme/global.css):** a second `@font-face` for the same `'Inter Variable'` family, right after the Latin one. Its `unicode-range` covers only Greek letters, so the TV loads the file only when a Greek letter is on screen, and everything else keeps using the Latin file:
+
+  ```css
+  @font-face {
+  	font-family: 'Inter Variable';
+  	font-style: normal;
+  	font-weight: 100 900;
+  	font-display: block;
+  	unicode-range: U+0370-0377, U+037A-037F, U+0384-038A, U+038C, U+038E-03A1, U+03A3-03FF;
+  	src: url('../assets/inter-greek-wght.woff2') format('woff2');
+  }
+  ```
+
+Note: this covers the menus and every text that uses Inter. The clock widget fonts you can choose (for example Montserrat) are separate, and a widget font without Greek letters shows the date in the TV's font.
 
 ### 2. Weather city search in the Hearth language
 
