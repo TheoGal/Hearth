@@ -20,3 +20,10 @@ export function placeLanguage (): string {
 		return 'en';
 	}
 }
+
+/** Fork: the page language follows the Hearth language, so the browser applies its rules, e.g. Greek capitals
+ *  (CSS text-transform: uppercase) drop their accents: "Βασικά" becomes ΒΑΣΙΚΑ, not ΒΑΣΙΚΆ. */
+export function syncPageLanguage (): void {
+	const lang = placeLanguage();
+	if (document.documentElement.lang !== lang) document.documentElement.lang = lang;
+}

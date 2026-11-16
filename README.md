@@ -110,6 +110,26 @@ Notes:
 - The **Popular cities** list shown before you search is built into Hearth in English. Search instead to get the Greek name.
 - The high and low temperature letters (H and L) are not changed.
 
+### 5. Greek capitals without accents
+
+Some Hearth headings (the Settings tabs and the group titles, for example ΕΜΦΑΝΙΣΗ, ΚΑΙΡΟΣ) are written in capitals by CSS (`text-transform: uppercase`). Greek capitals must drop their accents, but the browser only does that when it knows the page is Greek. The original Hearth always marks the page as English (`<html lang="en">`), so Greek headings showed accents (ΒΑΣΙΚΆ instead of ΒΑΣΙΚΑ).
+
+The fork sets the page language to the Hearth language, so the browser applies the Greek rules.
+
+What was changed, and where:
+
+- **[`src/fork/placelang.ts`](src/fork/placelang.ts):** new function `syncPageLanguage()`, which sets `<html lang>` to `placeLanguage()` (for example `el`).
+- **[`src/app.tsx`](src/app.tsx):** imports it and calls it right after Hearth applies the saved language:
+
+  ```ts
+  import {syncPageLanguage} from './fork/placelang';
+  ...
+  applyLanguage(config.language);
+  syncPageLanguage();
+  ```
+
+The Greek menus were also checked in Chrome at 1920x1080 (all Settings tabs, the app menu): long Greek texts wrap within their rows and nothing is cut off or overlapping.
+
 ## Updating from Hearth
 
 When Hearth releases a new version, follow [`FORK-SYNC.md`](FORK-SYNC.md): a short checklist for syncing this fork and keeping its changes.

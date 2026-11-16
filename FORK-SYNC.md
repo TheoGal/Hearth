@@ -36,6 +36,7 @@ Rules per file:
 | `src/lib/weathernet.ts` | Take Hearth's new version, then re-apply fix B below. |
 | `src/lib/prefs.ts` | Take Hearth's new version, then re-apply fix C below. |
 | `src/lib/clockfont.ts` | Take Hearth's new version, then re-apply fix D below. |
+| `src/app.tsx` | Take Hearth's new version, then re-apply fix E below. |
 | `src/theme/global.css` | Keep **both** versions: Hearth's lines and the lines marked `/* Fork: ... */`. Delete only the marker lines. |
 | `src/config/bundledlanguages.ts` | Take Hearth's version. |
 | `docs/languages/packs/el.json` | Only if Hearth added its own Greek: keep this fork's version. |
@@ -86,6 +87,20 @@ export function geocodeUrl (query: string, language = 'en'): string {
 
    ```ts
    	id = greekSafeFont(id);   // fork: Greek on = a font without Greek letters is drawn as Inter
+   ```
+
+### Fix E: `src/app.tsx`
+
+1. Under the line `import {applyLanguage, ...} from './i18n/pack';` add:
+
+   ```ts
+   import {syncPageLanguage} from './fork/placelang';
+   ```
+
+2. Find the line that starts with `applyLanguage(config.language);` and add this line right under it:
+
+   ```ts
+   	syncPageLanguage();
    ```
 
 ## 3. Check the build

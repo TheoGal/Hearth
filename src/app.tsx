@@ -67,6 +67,7 @@ import {cleanupMessage, removeTakeover} from './lib/takeover';
 import {getSamStatus, installSamHome, reapplySamHome, removeSamHome, samMessage, stockSam} from './lib/samhome';
 import {t as tt} from './i18n';
 import {applyLanguage, removePack, bundledReady, loadBundled, reapply} from './i18n/pack';
+import {syncPageLanguage} from './fork/placelang';
 import {loadPackFile} from './lib/langpack';
 import {PACK_ID, isBundledLanguage} from './lib/languages';
 import {applyPref, disabledReason, essentialIds, findPref, homeReplacementOn, GROUP_PREFIX, optionsFor, resetLook, type Press, type PrefTab, type SystemInfo} from './lib/prefs';
@@ -123,6 +124,7 @@ export function App () {
 	const settingsOpen = screen !== 'home';   // Settings stays open under its sub-screens (editor, pickers)
 	const [config, setConfig] = useState<UserConfig>(loadConfig);
 	applyLanguage(config.language);       // T2b: the texts follow the saved language (cheap when nothing changed; a loaded pack was already applied at start-up)
+	syncPageLanguage();                    // fork: <html lang> follows the Hearth language (Greek capitals without accents)
 	const [apps, setApps] = useState<AppEntry[]>(cachedApps);      // last known list: the row is drawn at once
 	const statsRef = useRef<SystemStats | null>(null);
 	const [debugTick, setDebugTick] = useState(0);                    // bumped when the Debug tab opens, so it shows fresh events
