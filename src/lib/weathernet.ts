@@ -5,6 +5,7 @@
 
 import {exec} from './apps';
 import {FORECAST_HOSTS, forecastUrl, geocodeUrl, parseCities, parseWeather, validCoords, type City, type ForecastHost, type WeatherData} from './weather';
+import {placeLanguage} from '../fork/placelang';
 
 /** Only plain https addresses made of safe characters ever reach a shell. */
 const SAFE_URL = /^https:\/\/[A-Za-z0-9._\/?=&,%-]+$/;
@@ -84,5 +85,5 @@ export function fetchWeather (city: City, allowShell: boolean): Promise<WeatherD
 
 export function searchCities (query: string, allowShell: boolean): Promise<City[]> {
 	if (query.trim().length < 2) return Promise.resolve([]);
-	return fetchText(geocodeUrl(query), allowShell).then(parseCities);
+	return fetchText(geocodeUrl(query, placeLanguage()), allowShell).then(parseCities);
 }

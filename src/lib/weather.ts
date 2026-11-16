@@ -56,8 +56,8 @@ export function forecastUrl (lat: number, lon: number, host: ForecastHost = FORE
 		+ '&current=temperature_2m,weather_code,is_day&daily=temperature_2m_max,temperature_2m_min&forecast_days=1&timezone=auto';
 }
 
-export function geocodeUrl (query: string): string {
-	return 'https://geocoding-api.open-meteo.com/v1/search?name=' + encodeURIComponent(query.trim().slice(0, 60)) + '&count=8&language=en&format=json';
+export function geocodeUrl (query: string, language = 'en'): string {
+	return 'https://geocoding-api.open-meteo.com/v1/search?name=' + encodeURIComponent(query.trim().slice(0, 60)) + '&count=8&language=' + language + '&format=json';
 }
 
 /** Reads Open-Meteo's forecast reply; null when it isn't one. */
