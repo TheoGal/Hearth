@@ -53,6 +53,14 @@
 @font-face { font-family: 'Jura'; font-style: normal; font-weight: 300 500; font-display: block; src: url('../assets/hearth-jura.woff') format('woff'); }
 @font-face { font-family: 'Tektur'; font-style: normal; font-weight: 400 500; font-display: block; src: url('../assets/hearth-tektur.woff') format('woff'); }
 @font-face { font-family: 'JetBrains Mono'; font-style: normal; font-weight: 400 700; font-display: block; src: url('../assets/hearth-jetbrains.woff') format('woff'); }
+/* Fork: Greek letters for the widget fonts whose typeface has them (same font versions, from @fontsource 5.3.0);
+   fetched only when a Greek letter is drawn. */
+@font-face { font-family: 'Roboto Mono'; font-style: normal; font-weight: 200; font-display: block; unicode-range: U+0370-0377, U+037A-037F, U+0384-038A, U+038C, U+038E-03A1, U+03A3-03FF; src: url('../assets/roboto-mono-greek-200.woff2') format('woff2'); }
+@font-face { font-family: 'Roboto Mono'; font-style: normal; font-weight: 300; font-display: block; unicode-range: U+0370-0377, U+037A-037F, U+0384-038A, U+038C, U+038E-03A1, U+03A3-03FF; src: url('../assets/roboto-mono-greek-300.woff2') format('woff2'); }
+@font-face { font-family: 'Roboto Mono'; font-style: normal; font-weight: 400; font-display: block; unicode-range: U+0370-0377, U+037A-037F, U+0384-038A, U+038C, U+038E-03A1, U+03A3-03FF; src: url('../assets/roboto-mono-greek-400.woff2') format('woff2'); }
+@font-face { font-family: 'Jura'; font-style: normal; font-weight: 300 500; font-display: block; unicode-range: U+0370-0377, U+037A-037F, U+0384-038A, U+038C, U+038E-03A1, U+03A3-03FF; src: url('../assets/jura-greek-wght.woff2') format('woff2'); }
+@font-face { font-family: 'Tektur'; font-style: normal; font-weight: 400 500; font-display: block; unicode-range: U+0370-0377, U+037A-037F, U+0384-038A, U+038C, U+038E-03A1, U+03A3-03FF; src: url('../assets/tektur-greek-wght.woff2') format('woff2'); }
+@font-face { font-family: 'JetBrains Mono'; font-style: normal; font-weight: 400 700; font-display: block; unicode-range: U+0370-0377, U+037A-037F, U+0384-038A, U+038C, U+038E-03A1, U+03A3-03FF; src: url('../assets/jetbrains-mono-greek-wght.woff2') format('woff2'); }
 @font-face { font-family: 'Pixelify Sans'; font-style: normal; font-weight: 500; font-display: block; src: url('../assets/hearth-pixelify.woff') format('woff'); }
 
 /* more clock fonts, from the Fontsource packages (Latin subset; variable ones keep their weight range) */

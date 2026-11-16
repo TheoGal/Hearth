@@ -14,6 +14,7 @@ import {
 } from './storage';
 import {LABEL_WEIGHTS, LABEL_SIZES, isMonoStyle, effectiveIconStyle, hasLightTile, hasPrefsBackup} from './storage';
 import {CLOCK_FONT_IDS, LABEL_FONT_IDS, fontLabel, type ClockFont} from './clockfont';
+import {fontChoice} from '../fork/greekfonts';
 import {activeSlug, activeTheme, savedIndex, userThemeList} from './themelist';
 import {SCROLL_SPEED_IDS, scrollSpeedText} from './scrollspeed';
 import {TILE_SHAPE_IDS, tileShapeText} from './tileshape';
@@ -369,8 +370,8 @@ const BASE_PREFS: PrefDef[] = [
 		(c) => c.showLabels, (c, v) => ({...c, showLabels: v})),
 	choice('labelColor', 'look',
 		LABEL_COLOR_IDS, (c) => c.labelColor, (c, v) => ({...c, labelColor: v}), labelColorText),
-	choice('labelFont', 'look',
-		LABEL_FONT_IDS, (c) => c.labelFont, (c, v) => ({...c, labelFont: v}), (v) => (v === 'default' ? td('common.default') : fontLabel(v as ClockFont))),
+	fontChoice('labelFont', 'look',
+		LABEL_FONT_IDS, 'default', (c) => c.labelFont, (c, v) => ({...c, labelFont: v}), (v) => (v === 'default' ? td('common.default') : fontLabel(v as ClockFont))),
 	choice('labelSize', 'look',
 		LABEL_SIZES, (c) => c.labelSize, (c, v) => ({...c, labelSize: v}), (v) => `${v}%`),
 	choice('labelWeight', 'look',
@@ -418,8 +419,8 @@ const BASE_PREFS: PrefDef[] = [
 		'clockSize', (c) => c.clock.size, (c, v) => ({...c, clock: {...c.clock, size: v}}), (v) => `${sizeLabel(v)}`),
 	toggle('widgetOn', 'clock',
 		(c) => c.clock.show, (c, v) => ({...c, clock: {...c.clock, show: v}})),
-	choice('clockFont', 'clock',
-		CLOCK_FONT_IDS, (c) => c.clock.font, (c, v) => ({...c, clock: {...c.clock, font: v}}), (v) => fontLabel(v)),
+	fontChoice('clockFont', 'clock',
+		CLOCK_FONT_IDS, 'inter', (c) => c.clock.font, (c, v) => ({...c, clock: {...c.clock, font: v}}), (v) => fontLabel(v)),
 	choice('clockWeight', 'clock',
 		WEIGHTS, (c) => c.clock.weight, (c, v) => ({...c, clock: {...c.clock, weight: v}}), (v) => weightText(v)),
 	range('clockTop', 'clock',

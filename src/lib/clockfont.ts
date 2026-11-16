@@ -1,3 +1,5 @@
+import {greekSafeFont} from '../fork/greekfonts';
+
 // The typefaces the clock can use. All but "TV font" are bundled with the launcher (so they look the
 // same on every TV and webOS version); "TV font" is whatever the TV's own web view uses for its UI.
 
@@ -89,6 +91,7 @@ const withArabic = (family: string): string => {
 };
 
 export function fontFamily (id: ClockFont): string {
+	id = greekSafeFont(id);   // fork: Greek on = a font without Greek letters is drawn as Inter
 	for (const f of CLOCK_FONTS) if (f.id === id) return withArabic(f.family);
 	return withArabic(CLOCK_FONTS[0].family);
 }
