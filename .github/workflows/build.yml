@@ -1,0 +1,61 @@
+# Builds the Hearth IPK on every push to main (and on demand) and publishes it as a GitHub Release.
+# Fork-only file: Hearth upstream has no such workflow, so syncing the fork never conflicts with it.
+name: Build IPK
+
+on:
+  push:
+    branches: [main]
+    paths-ignore:
+      - 'docs/**'
+      - 'mkdocs.yml'
+      - '**.md'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: build-ipk
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build and package
+        run: npm run package
+
+      - name: Read version
+        id: meta
+        run: |
+          VERSION=$(node -p "require('./public/appinfo.json').version")
+          IPK=$(ls build/*.ipk)
+          echo "version=$VERSION" >> "$GITHUB_OUTPUT"
+          echo "tag=v$VERSION-build.$GITHUB_RUN_NUMBER" >> "$GITHUB_OUTPUT"
+          echo "ipk=$IPK" >> "$GITHUB_OUTPUT"
+
+      - name: Keep the IPK as a build artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: hearth-${{ steps.meta.outputs.version }}-build.${{ github.run_number }}
+          path: ${{ steps.meta.outputs.ipk }}
+
+      - name: Publish release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh release create "${{ steps.meta.outputs.tag }}" "${{ steps.meta.outputs.ipk }}" \
+            --target "$GITHUB_SHA" \
+            --title "Hearth ${{ steps.meta.outputs.version }} (build ${{ github.run_number }})" \
+            --notes "Automatic build of commit ${GITHUB_SHA::7}: $(git log -1 --format=%s)" \
+            --latest
