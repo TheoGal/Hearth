@@ -41,21 +41,29 @@ jobs:
           VERSION=$(node -p "require('./public/appinfo.json').version")
           IPK=$(ls build/*.ipk)
           echo "version=$VERSION" >> "$GITHUB_OUTPUT"
-          echo "tag=v$VERSION-build.$GITHUB_RUN_NUMBER" >> "$GITHUB_OUTPUT"
+          echo "tag=v$VERSION" >> "$GITHUB_OUTPUT"
           echo "ipk=$IPK" >> "$GITHUB_OUTPUT"
 
       - name: Keep the IPK as a build artifact
         uses: actions/upload-artifact@v4
         with:
-          name: hearth-${{ steps.meta.outputs.version }}-build.${{ github.run_number }}
+          name: hearth-${{ steps.meta.outputs.version }}
           path: ${{ steps.meta.outputs.ipk }}
 
       - name: Publish release
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
-          gh release create "${{ steps.meta.outputs.tag }}" "${{ steps.meta.outputs.ipk }}" \
+          TAG="${{ steps.meta.outputs.tag }}"
+          # Same version built again (a change of your own, no new Hearth version): the old release and tag
+          # are replaced, so there is always one release per version, pointing at the newest build.
+          if gh release view "$TAG" >/dev/null 2>&1; then
+            gh release delete "$TAG" --yes --cleanup-tag
+          elif git ls-remote --exit-code --tags origin "refs/tags/$TAG" >/dev/null 2>&1; then
+            git push origin ":refs/tags/$TAG"
+          fi
+          gh release create "$TAG" "${{ steps.meta.outputs.ipk }}" \
             --target "$GITHUB_SHA" \
-            --title "Hearth ${{ steps.meta.outputs.version }} (build ${{ github.run_number }})" \
+            --title "Hearth ${{ steps.meta.outputs.version }}" \
             --notes "Automatic build of commit ${GITHUB_SHA::7}: $(git log -1 --format=%s)" \
             --latest
