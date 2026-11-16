@@ -75,6 +75,8 @@ What was changed, and where:
   	...
   ```
 
+This applies at once when the language is switched, with no restart. Switching back to English brings back all 27 fonts and the font chosen before.
+
 Fonts that come with a loaded theme are not filtered.
 
 ### 2. Weather city search in the Hearth language
@@ -107,6 +109,10 @@ Notes:
 - The city name is saved when you pick a city. After switching to Greek, search for your city again and pick it to get the Greek name.
 - The **Popular cities** list shown before you search is built into Hearth in English. Search instead to get the Greek name.
 - The high and low temperature letters (H and L) are not changed.
+
+## Updating from Hearth
+
+When Hearth releases a new version, follow [`FORK-SYNC.md`](FORK-SYNC.md): a short checklist for syncing this fork and keeping its changes.
 
 ## Builds
 
