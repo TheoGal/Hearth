@@ -92,7 +92,7 @@ const withArabic = (family: string): string => {
 };
 
 export function fontFamily (id: ClockFont): string {
-	id = greekSafeFont(id);   // fork: Greek on = a font without Greek letters is drawn as Inter
+	id = greekSafeFont(id);   // fork: a font without Greek letters (removed from the list) is drawn as Inter
 	for (const f of CLOCK_FONTS) if (f.id === id) return withArabic(f.family);
 	return withArabic(CLOCK_FONTS[0].family);
 }
