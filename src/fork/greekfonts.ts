@@ -1,10 +1,8 @@
-// Fork addition: with Greek as the Hearth language, the font choices (Widget font and App names font) offer only
-// fonts that have Greek letters, and a saved font without them is drawn as Inter. The saved setting itself is
-// not changed, so switching back to another language brings it back.
+// Fork addition: the font choices (Widget font and App names font) offer only fonts that have Greek letters,
+// in every language. A saved font without them (e.g. Hearth's default Outfit) is drawn as Inter.
 
 import {stepValue, type UserConfig} from '../lib/storage';
 import type {Press, PrefTab} from '../lib/prefs';
-import {placeLanguage} from './placelang';
 
 /** Built-in fonts whose typeface has no Greek letters (checked against each typeface's full character set). */
 const NO_GREEK: readonly string[] = [
@@ -12,18 +10,14 @@ const NO_GREEK: readonly string[] = [
 	'nunito', 'montserrat', 'jost', 'raleway', 'playfair', 'bebas', 'bevan', 'alfaslab', 'greatvibes', 'pinyon', 'kaushan'
 ];
 
-export function greekActive (): boolean {
-	return placeLanguage() === 'el';
-}
-
-/** The font actually used: `fallback` when Greek is on and the font has no Greek letters. */
+/** The font actually used: `fallback` for a font without Greek letters. */
 export function greekSafeFont (id: string, fallback = 'inter'): string {
-	return greekActive() && NO_GREEK.indexOf(id) !== -1 ? fallback : id;
+	return NO_GREEK.indexOf(id) !== -1 ? fallback : id;
 }
 
-/** The fonts offered: all of them, or only those with Greek letters when Greek is on. */
+/** The fonts offered: only those with Greek letters. */
 export function fontsForLanguage (all: readonly string[]): readonly string[] {
-	return greekActive() ? all.filter((id) => NO_GREEK.indexOf(id) === -1) : all;
+	return all.filter((id) => NO_GREEK.indexOf(id) === -1);
 }
 
 /** A font choice row (like prefs.ts `choice`) that follows the rules above. */

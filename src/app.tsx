@@ -68,6 +68,7 @@ import {getSamStatus, installSamHome, reapplySamHome, removeSamHome, samMessage,
 import {t as tt} from './i18n';
 import {applyLanguage, removePack, bundledReady, loadBundled, reapply} from './i18n/pack';
 import {syncPageLanguage} from './fork/placelang';
+import {syncBuiltInVeil} from './fork/builtinveil';
 import {loadPackFile} from './lib/langpack';
 import {PACK_ID, isBundledLanguage} from './lib/languages';
 import {applyPref, disabledReason, essentialIds, findPref, homeReplacementOn, GROUP_PREFIX, optionsFor, resetLook, type Press, type PrefTab, type SystemInfo} from './lib/prefs';
@@ -253,6 +254,7 @@ export function App () {
 		setRootVars({'--fade-display': a > 0 ? 'block' : 'none', '--fade-height': `${config.fadeHeight}%`, '--fade-a': String(a), '--fade-b': (a * 0.55).toFixed(3), '--fade-c': (a * 0.2).toFixed(3)});
 	}, [config.fadeStrength, config.fadeHeight]);
 	useEffect(() => { applyTheme(config.theme); applyBackground(config.background, THEMES[config.theme], config.wallpaper.mode === 'gradient'); }, [config.theme, config.background, config.wallpaper.mode]);
+	useEffect(() => { syncBuiltInVeil(config.wallpaper.mode === 'gradient' && config.background !== PHOTO_SHOW, config.wallpaperOpacity); }, [config.background, config.wallpaper.mode, config.wallpaperOpacity]);       // fork: opacity for a built-in photo
 	// P77 Icon colour: overrides the shape colours of the mono styles after the theme's own; Follow theme re-applies the theme (once, only after an override).
 	const inkOverridden = useRef(false);
 	useEffect(() => {
@@ -1598,7 +1600,7 @@ export function App () {
 
 	return (
 		<>
-			{photoShow && <PhotoShow fit={config.wallpaper.fit === 'fit'} intervalSec={config.wallpaper.intervalSec} shuffle={config.wallpaper.shuffle} paused={asleep} />}
+			{photoShow && <PhotoShow fit={config.wallpaper.fit === 'fit'} intervalSec={config.wallpaper.intervalSec} shuffle={config.wallpaper.shuffle} paused={asleep} opacity={config.wallpaperOpacity} />}
 			{!photoShow && <Wallpaper config={config.wallpaper} opacity={config.wallpaperOpacity} onProblem={(text) => showToast(text, 'error')} />}
 			{/* Home stays mounted under the other screens so it keeps its focus position. */}
 			<Home items={homeItems} favourites={config.favourites} timeFormat={timeFormat} appearance={appearance} active={screen === 'home' && !menu && !recents && !notice} paused={asleep} onActivate={onActivate} onLongPress={onLongPress} onDeadDown={config.hideSettings && !tileBack ? showTileAgain : undefined} onBack={openRecents} wake={homeResets} homeKey={config.homeFocus === 'last' && !bootFirst.current ? lastOpened.current : null} focus={focus} weather={weatherLine} moveMode={moveMode} tileKeys={keysRef.current} onMovePick={onMovePick} onMoveStep={onMoveStep} onMoveExit={onMoveExit} />

@@ -21,6 +21,8 @@ import {createPointerGuard} from '../lib/pointerguard';
 import {tileSlot} from '../lib/tileslot';
 import {hoverSelected, hoverCancel} from '../lib/pointer';
 import {t as tt} from '../i18n';
+import {HomeButtons, ProbePanel, Vignette} from '../fork/HomeButtons';
+import {buttonKey, openSystemButton} from '../fork/systembuttons';
 
 const ROWS_SHUT_MS = 520;       // p20 (user): Up, the second row goes away and the favourites row glides back down: slower and with a soft start (old: the opening glide, 360 ms ease-out, felt like springing back)
 const ROWS_FADE_MS = 160;        // p25a: the second row fades out this fast on Up (p30, user: shorter; old: 240)
@@ -193,6 +195,10 @@ export function Home ({items: allItems, favourites, timeFormat, appearance, acti
 	deadCall.current = onDeadDown;
 	const quietRef = useRef(false);                       // true while the apps are hidden and for the key press that woke them
 	const [quiet, setQuiet] = useState(false);
+	const [btn, setBtn] = useState(-1);                  // fork: the focused LG Home style button (-1 = the tiles)
+	const btnRef = useRef(-1);
+	btnRef.current = btn;
+	const [probe, setProbe] = useState(false);           // fork: the app ID test page
 	const [dimmed, setDimmed] = useState(false);
 	const stepRef = useRef(initialStepState());
 	const speedRef = useRef(appearance.scrollSpeed);
@@ -212,6 +218,7 @@ export function Home ({items: allItems, favourites, timeFormat, appearance, acti
 		const slot = tileSlot(node);
 		if (!slot || moveRef.current || slot.row >= sizes.length || slot.col >= sizes[slot.row]) return;
 		pendingKey.current = null;
+		setBtn(-1);                                          // fork
 		hoverSelected();
 		setPosition((p) => ({row: slot.row, cols: clampPosition(sizes, p).cols.map((c, i) => (i === slot.row ? slot.col : c))}));
 	};
@@ -310,6 +317,7 @@ export function Home ({items: allItems, favourites, timeFormat, appearance, acti
 		pendingKey.current = found ? null : homeKey || null;
 		setPosition(found || initialPosition());
 		setOpen(false);
+		setBtn(-1);                                          // fork
 		if (moveRef.current && moveCb.current.onMoveExit) moveCb.current.onMoveExit();       // Hearth came back to the front: the move mode ends
 	}, [wake]);
 	useEffect(() => {
@@ -355,6 +363,10 @@ export function Home ({items: allItems, favourites, timeFormat, appearance, acti
 			}
 			if ((key === 'up' || key === 'down') && mv.picked && cb.onMovePick) cb.onMovePick(null);       // changing row puts the tile down where it is
 		}
+		if (!moveRef.current) {                              // fork: the button column (Up from the top row, then Up/Down)
+			const b = buttonKey(key, btnRef.current, clampPosition(sizes, posRef.current).row === 0);
+			if (b !== null) { setBtn(b); return true; }
+		}
 		if (key === 'left' || key === 'right') {
 			// a held key repeats faster than the row can glide: thin the repeats out, gently at first
 			const d = stepDecision(stepRef.current, Date.now(), !!(event && event.repeat), speedRef.current);
@@ -385,9 +397,10 @@ export function Home ({items: allItems, favourites, timeFormat, appearance, acti
 		return true;            // OK is handled by useOkPress below (press vs hold)
 	}, [sizeKey, onBack]);
 
-	useKeys(handleKey, active);
+	useKeys(handleKey, active && !probe);
 	useOkPress({
 		onPress: () => {
+			if (btnRef.current >= 0 && !quietRef.current) { openSystemButton(btnRef.current).catch(() => undefined); return; }       // fork
 			if (!selectedItem || quietRef.current) return;
 			const mv = moveRef.current;
 			if (mv) {                                          // move mode: OK picks the tile up or puts it down
@@ -399,8 +412,9 @@ export function Home ({items: allItems, favourites, timeFormat, appearance, acti
 			}
 			onActivate(selectedItem);
 		},
-		onLongPress: () => { if (selectedItem && onLongPress && !quietRef.current && !moveRef.current) onLongPress(selectedItem); }
-	}, active);
+		onLongPress: () => { if (btnRef.current >= 0 && !quietRef.current) { setProbe(true); return; }       // fork: the app ID test page
+			if (selectedItem && onLongPress && !quietRef.current && !moveRef.current) onLongPress(selectedItem); }
+	}, active && !probe);
 
 	// The row's sizes are set on the row itself (not on :root), so the Settings grid keeps its own.
 	const {tileSize, tileGap} = tileSizes(appearance);
@@ -417,6 +431,7 @@ export function Home ({items: allItems, favourites, timeFormat, appearance, acti
 
 	return (
 		<div class={`screen${active ? '' : ' screen--away'}${shift ? ' screen--shift' : ''}${shiftVars.cls ? ' ' + shiftVars.cls : ''}`} style={shiftVars.css || undefined}>
+			<Vignette />
 			{moveMode && <div class="movehint"><div class="movehint__main">{tt('move.hint')}</div><div class="movehint__sub">{tt('move.hintBack')}</div></div>}
 			{appearance.clock.show && !moveMode && <Clock now={now} format={timeFormat} config={appearance.clock} weather={weather} />}
 			<div ref={rowsRef} class={classes} style={rowStyle}>
@@ -426,9 +441,9 @@ export function Home ({items: allItems, favourites, timeFormat, appearance, acti
 						<Row
 							key={r}
 							items={items.slice(start, start + size)}
-							focused={r === at.row}
+							focused={btn < 0 && r === at.row}
 							selected={at.cols[r]}
-							onSelect={(col) => { pendingKey.current = null; setPosition({row: r, cols: at.cols.map((c, i) => (i === r ? col : c))}); }}
+							onSelect={(col) => { pendingKey.current = null; setBtn(-1); setPosition({row: r, cols: at.cols.map((c, i) => (i === r ? col : c))}); }}
 							onActivate={(col) => { if (!moveRef.current) onActivate(items[start + col]); }}
 							edgeSpeed={edgeSpeedFactor(appearance.scrollSpeed)}
 							tileSize={tileSize}
@@ -441,6 +456,8 @@ export function Home ({items: allItems, favourites, timeFormat, appearance, acti
 					);
 				})}
 			</div>
+			<HomeButtons focused={btn} hidden={quiet || !!moveMode} onHover={(i) => { if (!moveRef.current) setBtn(i); }} onPick={(i) => { openSystemButton(i).catch(() => undefined); }} />
+			{probe && <ProbePanel onClose={() => setProbe(false)} />}
 		</div>
 	);
 }

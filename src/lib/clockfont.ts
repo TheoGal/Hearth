@@ -1,4 +1,5 @@
 import {greekSafeFont} from '../fork/greekfonts';
+import {withForkFonts} from '../fork/fonts';
 
 // The typefaces the clock can use. All but "TV font" are bundled with the launcher (so they look the
 // same on every TV and webOS version); "TV font" is whatever the TV's own web view uses for its UI.
@@ -14,7 +15,7 @@ export interface ClockFontInfo {
 	family: string;
 }
 
-export const BUILTIN_FONTS: readonly ClockFontInfo[] = [
+export const BUILTIN_FONTS: readonly ClockFontInfo[] = withForkFonts([       // fork: adds the extra fonts (src/fork/fonts.ts)
 	{id: 'inter', label: 'Inter (default)', family: '"Inter Variable", "LG Smart UI", "Helvetica Neue", Arial, sans-serif'},
 	{id: 'tv', label: 'TV font', family: '"LG Smart UI", "Helvetica Neue", Helvetica, Arial, sans-serif'},
 	{id: 'poppins', label: 'Poppins (rounded)', family: '"Poppins", "Helvetica Neue", Arial, sans-serif'},
@@ -42,7 +43,7 @@ export const BUILTIN_FONTS: readonly ClockFontInfo[] = [
 	{id: 'greatvibes', label: 'Great Vibes (elegant script)', family: '"Great Vibes", \"Brush Script MT\", cursive'},
 	{id: 'pinyon', label: 'Pinyon Script (copperplate script)', family: '"Pinyon Script", \"Brush Script MT\", cursive'},
 	{id: 'kaushan', label: 'Kaushan Script (brush script)', family: '"Kaushan Script", \"Brush Script MT\", cursive'}
-];
+]);
 
 export const BUILTIN_FONT_IDS: readonly string[] = BUILTIN_FONTS.map((f) => f.id);
 

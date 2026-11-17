@@ -582,7 +582,7 @@ export function loadConfig (): UserConfig {
 			clock: {
 				size: ranged(c.size, 'clockSize'),
 				show: c.show !== false,
-				weight: c.weight === 300 || c.weight === 400 || c.weight === 500 || c.weight === 600 || c.weight === 700 ? c.weight : 400,
+				weight: c.weight === 200 || c.weight === 300 || c.weight === 400 || c.weight === 500 || c.weight === 600 || c.weight === 700 ? c.weight : 400,
 				font: CLOCK_FONT_IDS.indexOf(c.font as ClockFont) !== -1 ? (c.font as ClockFont) : 'outfit',
 				top: ranged(c.top, 'clockTop'),
 				left: ranged(c.left, 'clockLeft'),

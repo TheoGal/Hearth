@@ -1,0 +1,85 @@
+/* Fork additions: vignette, LG Home style buttons, app ID test page. */
+
+/* Clear in the middle, darkening from about half way out to 40% black in the corners (smooth, many stops). */
+.fork-vignette {
+	position: absolute;
+	left: 0; top: 0; width: 100%; height: 100%;
+	pointer-events: none;
+	background: radial-gradient(ellipse 50% 50% at 50% 50%,
+		rgba(0, 0, 0, 0) 55%, rgba(0, 0, 0, 0.04) 70%, rgba(0, 0, 0, 0.14) 85%,
+		rgba(0, 0, 0, 0.26) 100%, rgba(0, 0, 0, 0.36) 118%, rgba(0, 0, 0, 0.40) 135%);
+}
+
+.fork-buttons {
+	position: absolute;
+	left: 0; top: 0;
+	-webkit-transition: opacity 300ms ease;
+	transition: opacity 300ms ease;
+}
+.fork-buttons--hidden { opacity: 0; pointer-events: none; }
+
+/* Each button is a 60px square centred 58px from the left edge; the icon is 34px. */
+.fork-button {
+	position: absolute;
+	left: 28px;
+	width: 60px; height: 60px;
+	border-radius: 14px;
+	display: -webkit-flex; display: flex;
+	-webkit-align-items: center; align-items: center;
+	-webkit-justify-content: center; justify-content: center;
+	color: #fff;
+	cursor: pointer;
+	-webkit-transition: background-color 150ms ease, color 150ms ease, -webkit-transform 150ms ease;
+	transition: background-color 150ms ease, color 150ms ease, transform 150ms ease;
+}
+.fork-button svg { display: block; }
+.fork-button--focused {
+	background: #fff;
+	color: var(--color-tile-bg);
+	-webkit-transform: scale(1.08); transform: scale(1.08);
+	box-shadow: 0 4px 18px rgba(0, 0, 0, 0.45);
+}
+
+/* Test page */
+.fork-probe {
+	position: absolute;
+	left: 120px; top: 60px; right: 120px; bottom: 60px;
+	background: rgba(10, 10, 10, 0.96);
+	border: 2px solid rgba(255, 255, 255, 0.25);
+	border-radius: 20px;
+	padding: 30px 40px;
+	color: #fff;
+	z-index: 20;
+	display: -webkit-flex; display: flex;
+	-webkit-flex-direction: column; flex-direction: column;
+}
+.fork-probe__title { font-size: 36px; margin-bottom: 6px; }
+.fork-probe__hint { font-size: 20px; opacity: 0.7; margin-bottom: 18px; }
+.fork-probe__list { -webkit-flex: 1; flex: 1; overflow: hidden; }
+.fork-probe__row {
+	display: -webkit-flex; display: flex;
+	-webkit-align-items: center; align-items: center;
+	padding: 6px 14px;
+	border-radius: 10px;
+	font-size: 22px;
+	line-height: 1.3;
+}
+.fork-probe__row--at { background: #fff; color: #000; }
+.fork-probe__group { width: 150px; -webkit-flex: none; flex: none; opacity: 0.7; }
+.fork-probe__id { -webkit-flex: 1; flex: 1; font-family: 'Roboto Mono', monospace; font-size: 20px; }
+.fork-probe__status { width: 110px; -webkit-flex: none; flex: none; text-align: right; }
+.fork-probe__status--found { color: #2ecc71; }
+.fork-probe__row--at .fork-probe__status--found { color: #0a7d3b; }
+.fork-probe__status--missing { opacity: 0.5; }
+.fork-probe__result { width: 330px; -webkit-flex: none; flex: none; text-align: right; font-size: 18px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+
+/* Fork: four extra widget / app name fonts that have Greek letters (from Fontsource 5.3, SIL Open Font License).
+   Each has a Latin file and a Greek file; the Greek one is fetched only when a Greek letter is drawn. */
+@font-face { font-family: 'Commissioner'; font-style: normal; font-weight: 100 900; font-display: block; src: url('./fonts/commissioner-latin-wght.woff2') format('woff2'); }
+@font-face { font-family: 'Commissioner'; font-style: normal; font-weight: 100 900; font-display: block; unicode-range: U+0370-03FF; src: url('./fonts/commissioner-greek-wght.woff2') format('woff2'); }
+@font-face { font-family: 'Manrope'; font-style: normal; font-weight: 200 800; font-display: block; src: url('./fonts/manrope-latin-wght.woff2') format('woff2'); }
+@font-face { font-family: 'Manrope'; font-style: normal; font-weight: 200 800; font-display: block; unicode-range: U+0370-03FF; src: url('./fonts/manrope-greek-wght.woff2') format('woff2'); }
+@font-face { font-family: 'Murecho'; font-style: normal; font-weight: 100 900; font-display: block; src: url('./fonts/murecho-latin-wght.woff2') format('woff2'); }
+@font-face { font-family: 'Murecho'; font-style: normal; font-weight: 100 900; font-display: block; unicode-range: U+0370-03FF; src: url('./fonts/murecho-greek-wght.woff2') format('woff2'); }
+@font-face { font-family: 'Comfortaa'; font-style: normal; font-weight: 300 700; font-display: block; src: url('./fonts/comfortaa-latin-wght.woff2') format('woff2'); }
+@font-face { font-family: 'Comfortaa'; font-style: normal; font-weight: 300 700; font-display: block; unicode-range: U+0370-03FF; src: url('./fonts/comfortaa-greek-wght.woff2') format('woff2'); }
