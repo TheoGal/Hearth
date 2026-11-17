@@ -5,7 +5,7 @@ import {useEffect, useState} from 'preact/hooks';
 import {useKeys} from '../hooks/useKeys';
 import {launchApp} from '../lib/launch';
 import {SYSTEM_BUTTONS, PROBE_TARGETS, describeTarget} from './systembuttons';
-import {customIcon, iconFileNames, ICON_DIR} from './customicons';
+import {customIcon, iconFileNames} from './customicons';
 import './fork.css';
 
 /** Darkens the screen edges (40% in the corners) so light icons stay readable on any wallpaper. */
@@ -108,7 +108,7 @@ export function ProbePanel ({onClose, tiles}: {onClose: () => void; tiles: {key:
 			<div class="fork-probe__title">Test page</div>
 			<div class="fork-probe__hint">↑ ↓ choose · OK launches a command · Back closes</div>
 			<div class="fork-probe__list">
-				<div class="fork-probe__section">Custom icons: put a PNG or JPG with the name shown in {ICON_DIR}, then press Home</div>
+				<div class="fork-probe__section">Custom icons: upload a PNG or JPG with the name shown to public/custom-icons/ in your fork, then install the new build</div>
 				{tiles.map((tile, i) => (
 					<div key={'t' + tile.key} class={`fork-probe__row${i === at ? ' fork-probe__row--at' : ''}`} onMouseEnter={() => setAt(i)}>
 						<span class="fork-probe__group">{tile.label}</span>

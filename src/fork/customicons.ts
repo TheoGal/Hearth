@@ -1,12 +1,11 @@
-// Fork addition: custom tile icons without root. Put a picture named after the app's ID in
-// /media/developer/icons/ (e.g. netflix.png, com.webos.app.hdmi1.jpg) and it replaces that tile's icon.
-// Hearth only loads files it can name (file://), so no folder browsing (which needs root) is involved.
-// The folder is checked at start and every time Hearth comes back to the front.
+// Fork addition: custom tile icons without root. A picture named after the app's ID in the fork's
+// public/custom-icons/ folder (e.g. netflix.png, com.webos.app.hdmi1.jpg) is built into the app and replaces that
+// tile's icon. Hearth loads it from its own folder, which works on every TV.
 
 import {useEffect, useState} from 'preact/hooks';
 import {iconLoads} from '../lib/ssap';
 
-export const ICON_DIR = '/media/developer/icons/';
+export const ICON_DIR = 'custom-icons/';
 const EXTENSIONS = ['png', 'jpg'];
 const CACHE_KEY = 'fork-custom-icons-v1';
 
@@ -24,7 +23,7 @@ function readCache (): Record<string, string> {
 /** The file address for an app ID, or undefined when the ID has characters a file name should not have. */
 function fileUrl (id: string, ext: string, stamp: number): string | undefined {
 	if (!/^[A-Za-z0-9._-]+$/.test(id)) return undefined;
-	return 'file://' + ICON_DIR + id + '.' + ext + '?v=' + stamp;
+	return ICON_DIR + id + '.' + ext + '?v=' + stamp;
 }
 
 /** The custom icon for an app ID, if one was found. */
