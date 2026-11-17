@@ -69,6 +69,7 @@ import {t as tt} from './i18n';
 import {applyLanguage, removePack, bundledReady, loadBundled, reapply} from './i18n/pack';
 import {syncPageLanguage} from './fork/placelang';
 import {syncBuiltInVeil} from './fork/builtinveil';
+import {useCustomIconsRev} from './fork/customicons';
 import {loadPackFile} from './lib/langpack';
 import {PACK_ID, isBundledLanguage} from './lib/languages';
 import {applyPref, disabledReason, essentialIds, findPref, homeReplacementOn, GROUP_PREFIX, optionsFor, resetLook, type Press, type PrefTab, type SystemInfo} from './lib/prefs';
@@ -964,6 +965,7 @@ export function App () {
 	// With "Most used" the row follows the open counts (favourites keep their places); it is rebuilt when Hearth comes
 	// back to the front, so a tile never jumps while its app is opening. The manual order stays saved underneath.
 	const recentWake = config.orderByRecent ? wakes : 0;
+	const forkIconsRev = useCustomIconsRev(shownApps.map((a) => a.id).concat(shownInputs.map((i) => i.appId)), wakes);       // fork: custom icons
 	const orderedTiles: TileModel[] = useMemo(
 		() => {
 			const manual = orderTiles(shownApps.map((a) => appTile(a, appEditsShown)).concat(shownInputs.map((i) => inputTile(i, config.sourceEdits, config.inputStatus))), (t) => t.key, config.tileOrder);
@@ -972,7 +974,7 @@ export function App () {
 			if (!usageRef.current) usageRef.current = readUsage();
 			return orderByUsage(manual, (t) => t.key, usageRef.current, recentRef.current, config.favourites);
 		},
-		[shownApps, shownInputs, config.tileOrder, config.sourceEdits, config.inputStatus, appEditsShown, config.orderByRecent, config.favourites, recentWake, themeRev]
+		[shownApps, shownInputs, config.tileOrder, config.sourceEdits, config.inputStatus, appEditsShown, config.orderByRecent, config.favourites, recentWake, themeRev, forkIconsRev]
 	);
 	const homeItems: TileModel[] = useMemo(
 		() => orderedTiles.concat(MISC_TILES.filter((t) => (t.key === MISC.lgHome ? config.showLgHome : t.key === MISC.system ? config.showSystem : !config.hideSettings || tileBack))),

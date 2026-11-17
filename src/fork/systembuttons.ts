@@ -53,31 +53,9 @@ export function buttonKey (key: string, current: number, atTopRow: boolean): num
 	return null;
 }
 
-/** Every app ID worth trying, for the test page (long-press OK on any button). */
-const PROBE_LIST: {group: string; target: LaunchTarget}[] = [
-	...['com.webos.app.accountmanager', 'com.webos.app.lgaccount', 'com.webos.app.membership', 'com.webos.app.account',
-		'com.webos.app.accountcenter', 'com.webos.app.profile', 'com.webos.app.userprofile', 'com.webos.app.login',
-		'com.webos.app.signin', 'com.lge.app.accountmanager', 'com.webos.app.lgemembership', 'com.webos.app.myaccount']
-		.map((id) => ({group: 'Account', target: {id}})),
-	{group: 'Account', target: {id: 'com.palm.app.settings', params: {target: 'account'}}},
-	{group: 'Account', target: {id: 'com.palm.app.settings', params: {target: 'general'}}},
-	{group: 'Search', target: {id: 'com.webos.app.voice', params: {activateType: 'mrcu', launchMode: 'vkb'}}},
-	{group: 'Search', target: {id: 'com.webos.app.voice'}},
-	...['com.webos.app.search', 'com.webos.app.searchapp', 'com.webos.app.globalsearch', 'com.webos.app.voicesearch',
-		'com.webos.app.universalsearch', 'com.webos.app.contentsearch', 'com.webos.app.lgsearch', 'com.webos.app.integratedsearch']
-		.map((id) => ({group: 'Search', target: {id}})),
-	...['com.webos.app.tvguide', 'com.webos.app.epg', 'com.webos.app.programguide', 'com.webos.app.channelguide',
-		'com.webos.app.tvprogram', 'com.webos.app.guide'].map((id) => ({group: 'TV program', target: {id}})),
-	// tested on an LG C3: "tvguide" opens the guide tab, "channels" the channels tab; other values froze the remote
-	{group: 'TV program', target: {id: 'com.webos.app.livemenu', params: {activateType: 'tvguide'}}},
-	{group: 'TV program', target: {id: 'com.webos.app.livemenu', params: {activateType: 'channels'}}},
-	{group: 'TV program', target: {id: 'com.webos.app.livetv', params: {activateType: 'guide'}}},
-	{group: 'Known', target: {id: 'com.webos.app.notificationcenter'}},
-	{group: 'Known', target: {id: 'com.webos.app.quicksettings'}}
-];
-
-/** TV program lines first (the ones still being tested). */
-export const PROBE_TARGETS = PROBE_LIST.filter((p) => p.group === 'TV program').concat(PROBE_LIST.filter((p) => p.group !== 'TV program'));
+/** The confirmed launch commands (tested on an LG C3), for the test page (long-press OK on any button). */
+export const PROBE_TARGETS: {group: string; target: LaunchTarget}[] = SYSTEM_BUTTONS.map((b) => ({group: b.label, target: b.targets[0]}))
+	.concat([{group: 'Channels', target: {id: 'com.webos.app.livemenu', params: {activateType: 'channels'}}}]);
 
 export function describeTarget (t: LaunchTarget): string {
 	return t.params ? `${t.id} ${JSON.stringify(t.params)}` : t.id;

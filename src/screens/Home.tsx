@@ -457,7 +457,7 @@ export function Home ({items: allItems, favourites, timeFormat, appearance, acti
 				})}
 			</div>
 			<HomeButtons focused={btn} hidden={quiet || !!moveMode} onHover={(i) => { if (!moveRef.current) setBtn(i); }} onPick={(i) => { openSystemButton(i).catch(() => undefined); }} />
-			{probe && <ProbePanel onClose={() => setProbe(false)} />}
+			{probe && <ProbePanel onClose={() => setProbe(false)} tiles={items} />}
 		</div>
 	);
 }

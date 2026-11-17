@@ -7,10 +7,13 @@ import {appIconUrl, isAppIcon} from '../config/appicons';
 import {autoIcon, type SourceEdits} from './sourceicons';
 import {themeIcon} from './themeicons';
 import {t as tt} from '../i18n';
+import {customIcon} from '../fork/customicons';
 
 export function appTile (app: AppEntry, edits: SourceEdits = {}): TileModel {
 	const edit = edits[app.id];
 	const themed = themeIcon(app.id);          // P81: the loaded theme's picture; the user's own choice below wins
+	const custom = customIcon(app.id);         // fork: a picture in /media/developer/icons wins
+	if (custom) return {key: app.id, label: (edit && edit.label) || app.title, imageUrl: custom, color: app.color};
 	if (!edit) return {key: app.id, label: app.title, imageUrl: themed || app.iconUrl, color: app.color};
 	// the user's picture wins, then a bundled app icon, then a drawn icon, then the app's own artwork
 	const bundled = edit.icon && isAppIcon(edit.icon) ? appIconUrl(edit.icon) : '';
@@ -21,6 +24,8 @@ export function appTile (app: AppEntry, edits: SourceEdits = {}): TileModel {
 export function inputTile (input: InputSource, edits: SourceEdits = {}, status = false): TileModel {
 	const edit = edits[input.appId] || {};
 	const tile: TileModel = {key: input.appId, label: edit.label || input.label, imageUrl: edit.iconData || undefined, sourceIcon: edit.icon || autoIcon(input.icon)};
+	const custom = customIcon(input.appId);    // fork: a picture in /media/developer/icons wins
+	if (custom) { tile.imageUrl = custom; tile.sourceIcon = undefined; }
 	if (!status) return tile;
 	if (!input.connected) return {...tile, disconnected: true, note: tt('tiles.notConnected')};
 	return input.deviceName && input.deviceName !== tile.label ? {...tile, note: input.deviceName} : tile;

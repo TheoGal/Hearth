@@ -3,8 +3,9 @@
 
 import {useEffect, useState} from 'preact/hooks';
 import {useKeys} from '../hooks/useKeys';
-import {appExists, launchApp} from '../lib/launch';
+import {launchApp} from '../lib/launch';
 import {SYSTEM_BUTTONS, PROBE_TARGETS, describeTarget} from './systembuttons';
+import {customIcon, iconFileNames, ICON_DIR} from './customicons';
 import './fork.css';
 
 /** Darkens the screen edges (40% in the corners) so light icons stay readable on any wallpaper. */
@@ -72,19 +73,13 @@ export function HomeButtons ({focused, hidden, onHover, onPick}: ButtonsProps) {
 /** Centres measured from LG Home on an LG C3 (1920x1080). */
 const BUTTON_Y = [70, 159, 245, 331, 417];
 
-type Status = 'checking' | 'found' | 'missing';
 
-/** The test page: every candidate app ID, whether the TV has it, and OK to launch it. */
-export function ProbePanel ({onClose}: {onClose: () => void}) {
-	const [status, setStatus] = useState<Status[]>(() => PROBE_TARGETS.map(() => 'checking'));
+/** The test page (long-press OK on any button): the custom icon file name for every tile, and the
+ *  confirmed launch commands with OK to try each one. */
+export function ProbePanel ({onClose, tiles}: {onClose: () => void; tiles: {key: string; label: string}[]}) {
 	const [result, setResult] = useState<string[]>(() => PROBE_TARGETS.map(() => ''));
 	const [at, setAt] = useState(0);
-
-	useEffect(() => {
-		PROBE_TARGETS.forEach((p, i) => {
-			appExists(p.target.id).then((found) => setStatus((s) => s.map((v, j) => (j === i ? (found ? 'found' : 'missing') : v))));
-		});
-	}, []);
+	const total = tiles.length + PROBE_TARGETS.length;
 
 	useEffect(() => {
 		const row = document.querySelector('.fork-probe__row--at');
@@ -102,25 +97,36 @@ export function ProbePanel ({onClose}: {onClose: () => void}) {
 
 	useKeys((key) => {
 		if (key === 'up') setAt((a) => Math.max(0, a - 1));
-		else if (key === 'down') setAt((a) => Math.min(PROBE_TARGETS.length - 1, a + 1));
-		else if (key === 'enter') launch(at);
+		else if (key === 'down') setAt((a) => Math.min(total - 1, a + 1));
+		else if (key === 'enter' && at >= tiles.length) launch(at - tiles.length);
 		else if (key === 'back') onClose();
 		return true;
 	}, true);
 
 	return (
 		<div class="fork-probe">
-			<div class="fork-probe__title">App ID test</div>
-			<div class="fork-probe__hint">↑ ↓ choose · OK launches · Back closes. Try OK even on "not found" lines (the TV may refuse the check). Note which line opens the right screen.</div>
+			<div class="fork-probe__title">Test page</div>
+			<div class="fork-probe__hint">↑ ↓ choose · OK launches a command · Back closes</div>
 			<div class="fork-probe__list">
-				{PROBE_TARGETS.map((p, i) => (
-					<div key={i} class={`fork-probe__row${i === at ? ' fork-probe__row--at' : ''}`} onMouseEnter={() => setAt(i)} onClick={() => launch(i)}>
-						<span class="fork-probe__group">{p.group}</span>
-						<span class="fork-probe__id">{describeTarget(p.target)}</span>
-						<span class={`fork-probe__status fork-probe__status--${status[i]}`}>{status[i] === 'missing' ? 'not found?' : status[i]}</span>
-						<span class="fork-probe__result">{result[i]}</span>
+				<div class="fork-probe__section">Custom icons: put a PNG or JPG with the name shown in {ICON_DIR}, then press Home</div>
+				{tiles.map((tile, i) => (
+					<div key={'t' + tile.key} class={`fork-probe__row${i === at ? ' fork-probe__row--at' : ''}`} onMouseEnter={() => setAt(i)}>
+						<span class="fork-probe__group">{tile.label}</span>
+						<span class="fork-probe__id">{iconFileNames(tile.key)}</span>
+						<span class={`fork-probe__status fork-probe__status--${customIcon(tile.key) ? 'found' : 'missing'}`}>{customIcon(tile.key) ? 'in use' : '-'}</span>
 					</div>
 				))}
+				<div class="fork-probe__section">Launch commands (tested on an LG C3)</div>
+				{PROBE_TARGETS.map((p, j) => {
+					const i = tiles.length + j;
+					return (
+						<div key={'l' + j} class={`fork-probe__row${i === at ? ' fork-probe__row--at' : ''}`} onMouseEnter={() => setAt(i)} onClick={() => launch(j)}>
+							<span class="fork-probe__group">{p.group}</span>
+							<span class="fork-probe__id">{describeTarget(p.target)}</span>
+							<span class="fork-probe__result">{result[j]}</span>
+						</div>
+					);
+				})}
 			</div>
 		</div>
 	);
