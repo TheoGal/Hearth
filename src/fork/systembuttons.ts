@@ -20,7 +20,8 @@ export const SYSTEM_BUTTONS: SystemButton[] = [
 	{key: 'search', label: 'Search', targets: [
 		{id: 'com.webos.app.voice', params: {activateType: 'mrcu', launchMode: 'vkb'}}, {id: 'com.webos.app.search'}
 	]},
-	{key: 'guide', label: 'TV program', targets: [{id: 'com.webos.app.livemenu', params: {activateType: 'guide'}}]}
+	// LG C3: only activateType "tvguide" opens the guide tab; other values (guide, epg, program...) froze the remote
+	{key: 'guide', label: 'TV program', targets: [{id: 'com.webos.app.livemenu', params: {activateType: 'tvguide'}}]}
 ];
 
 export const LAST_BUTTON = SYSTEM_BUTTONS.length - 1;
@@ -67,9 +68,9 @@ const PROBE_LIST: {group: string; target: LaunchTarget}[] = [
 		.map((id) => ({group: 'Search', target: {id}})),
 	...['com.webos.app.tvguide', 'com.webos.app.epg', 'com.webos.app.programguide', 'com.webos.app.channelguide',
 		'com.webos.app.tvprogram', 'com.webos.app.guide'].map((id) => ({group: 'TV program', target: {id}})),
-	...['guide', 'channels', 'epg', 'tvguide', 'program', 'programme', 'schedule', 'guides', 'tvGuide', 'programGuide']
-		.map((a) => ({group: 'TV program', target: {id: 'com.webos.app.livemenu', params: {activateType: a}}})),
-	{group: 'TV program', target: {id: 'com.webos.app.livemenu'}},
+	// tested on an LG C3: "tvguide" opens the guide tab, "channels" the channels tab; other values froze the remote
+	{group: 'TV program', target: {id: 'com.webos.app.livemenu', params: {activateType: 'tvguide'}}},
+	{group: 'TV program', target: {id: 'com.webos.app.livemenu', params: {activateType: 'channels'}}},
 	{group: 'TV program', target: {id: 'com.webos.app.livetv', params: {activateType: 'guide'}}},
 	{group: 'Known', target: {id: 'com.webos.app.notificationcenter'}},
 	{group: 'Known', target: {id: 'com.webos.app.quicksettings'}}
