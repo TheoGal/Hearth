@@ -21,7 +21,7 @@ import {createPointerGuard} from '../lib/pointerguard';
 import {tileSlot} from '../lib/tileslot';
 import {hoverSelected, hoverCancel} from '../lib/pointer';
 import {t as tt} from '../i18n';
-import {HomeButtons, ProbePanel, Vignette} from '../fork/HomeButtons';
+import {HomeButtons, Vignette} from '../fork/HomeButtons';
 import {buttonKey, openSystemButton} from '../fork/systembuttons';
 
 const ROWS_SHUT_MS = 520;       // p20 (user): Up, the second row goes away and the favourites row glides back down: slower and with a soft start (old: the opening glide, 360 ms ease-out, felt like springing back)
@@ -198,7 +198,6 @@ export function Home ({items: allItems, favourites, timeFormat, appearance, acti
 	const [btn, setBtn] = useState(-1);                  // fork: the focused LG Home style button (-1 = the tiles)
 	const btnRef = useRef(-1);
 	btnRef.current = btn;
-	const [probe, setProbe] = useState(false);           // fork: the app ID test page
 	const [dimmed, setDimmed] = useState(false);
 	const stepRef = useRef(initialStepState());
 	const speedRef = useRef(appearance.scrollSpeed);
@@ -397,7 +396,7 @@ export function Home ({items: allItems, favourites, timeFormat, appearance, acti
 		return true;            // OK is handled by useOkPress below (press vs hold)
 	}, [sizeKey, onBack]);
 
-	useKeys(handleKey, active && !probe);
+	useKeys(handleKey, active);
 	useOkPress({
 		onPress: () => {
 			if (btnRef.current >= 0 && !quietRef.current) { openSystemButton(btnRef.current).catch(() => undefined); return; }       // fork
@@ -412,9 +411,8 @@ export function Home ({items: allItems, favourites, timeFormat, appearance, acti
 			}
 			onActivate(selectedItem);
 		},
-		onLongPress: () => { if (btnRef.current >= 0 && !quietRef.current) { setProbe(true); return; }       // fork: the app ID test page
-			if (selectedItem && onLongPress && !quietRef.current && !moveRef.current) onLongPress(selectedItem); }
-	}, active && !probe);
+		onLongPress: () => { if (btnRef.current < 0 && selectedItem && onLongPress && !quietRef.current && !moveRef.current) onLongPress(selectedItem); }       // fork: no app menu on the buttons
+	}, active);
 
 	// The row's sizes are set on the row itself (not on :root), so the Settings grid keeps its own.
 	const {tileSize, tileGap} = tileSizes(appearance);
@@ -457,7 +455,6 @@ export function Home ({items: allItems, favourites, timeFormat, appearance, acti
 				})}
 			</div>
 			<HomeButtons focused={btn} hidden={quiet || !!moveMode} onHover={(i) => { if (!moveRef.current) setBtn(i); }} onPick={(i) => { openSystemButton(i).catch(() => undefined); }} />
-			{probe && <ProbePanel onClose={() => setProbe(false)} tiles={items} />}
 		</div>
 	);
 }

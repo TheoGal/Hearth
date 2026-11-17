@@ -52,11 +52,3 @@ export function buttonKey (key: string, current: number, atTopRow: boolean): num
 	if (key === 'left') return current;
 	return null;
 }
-
-/** The confirmed launch commands (tested on an LG C3), for the test page (long-press OK on any button). */
-export const PROBE_TARGETS: {group: string; target: LaunchTarget}[] = SYSTEM_BUTTONS.map((b) => ({group: b.label, target: b.targets[0]}))
-	.concat([{group: 'Channels', target: {id: 'com.webos.app.livemenu', params: {activateType: 'channels'}}}]);
-
-export function describeTarget (t: LaunchTarget): string {
-	return t.params ? `${t.id} ${JSON.stringify(t.params)}` : t.id;
-}

@@ -1,11 +1,6 @@
-// Fork addition: the vignette over the wallpaper, the LG Home style button column (top left) and the
-// test page for finding app IDs (long-press OK on any button).
+// Fork addition: the vignette over the wallpaper and the LG Home style button column (top left).
 
-import {useEffect, useState} from 'preact/hooks';
-import {useKeys} from '../hooks/useKeys';
-import {launchApp} from '../lib/launch';
-import {SYSTEM_BUTTONS, PROBE_TARGETS, describeTarget} from './systembuttons';
-import {customIcon, iconFileNames} from './customicons';
+import {SYSTEM_BUTTONS} from './systembuttons';
 import './fork.css';
 
 /** Darkens the screen edges (40% in the corners) so light icons stay readable on any wallpaper. */
@@ -72,62 +67,3 @@ export function HomeButtons ({focused, hidden, onHover, onPick}: ButtonsProps) {
 
 /** Centres measured from LG Home on an LG C3 (1920x1080). */
 const BUTTON_Y = [70, 159, 245, 331, 417];
-
-
-/** The test page (long-press OK on any button): the custom icon file name for every tile, and the
- *  confirmed launch commands with OK to try each one. */
-export function ProbePanel ({onClose, tiles}: {onClose: () => void; tiles: {key: string; label: string}[]}) {
-	const [result, setResult] = useState<string[]>(() => PROBE_TARGETS.map(() => ''));
-	const [at, setAt] = useState(0);
-	const total = tiles.length + PROBE_TARGETS.length;
-
-	useEffect(() => {
-		const row = document.querySelector('.fork-probe__row--at');
-		if (row && (row as HTMLElement).scrollIntoView) (row as HTMLElement).scrollIntoView({block: 'nearest'});
-	}, [at]);
-
-	const launch = (i: number) => {
-		const t = PROBE_TARGETS[i].target;
-		setResult((r) => r.map((v, j) => (j === i ? 'launching…' : v)));
-		launchApp(t.id, t.params || {}).then(
-			() => setResult((r) => r.map((v, j) => (j === i ? 'launched' : v))),
-			(e) => setResult((r) => r.map((v, j) => (j === i ? 'error: ' + (e && e.message ? e.message : String(e)) : v)))
-		);
-	};
-
-	useKeys((key) => {
-		if (key === 'up') setAt((a) => Math.max(0, a - 1));
-		else if (key === 'down') setAt((a) => Math.min(total - 1, a + 1));
-		else if (key === 'enter' && at >= tiles.length) launch(at - tiles.length);
-		else if (key === 'back') onClose();
-		return true;
-	}, true);
-
-	return (
-		<div class="fork-probe">
-			<div class="fork-probe__title">Test page</div>
-			<div class="fork-probe__hint">↑ ↓ choose · OK launches a command · Back closes</div>
-			<div class="fork-probe__list">
-				<div class="fork-probe__section">Custom icons: upload a PNG or JPG with the name shown to public/custom-icons/ in your fork, then install the new build</div>
-				{tiles.map((tile, i) => (
-					<div key={'t' + tile.key} class={`fork-probe__row${i === at ? ' fork-probe__row--at' : ''}`} onMouseEnter={() => setAt(i)}>
-						<span class="fork-probe__group">{tile.label}</span>
-						<span class="fork-probe__id">{iconFileNames(tile.key)}</span>
-						<span class={`fork-probe__status fork-probe__status--${customIcon(tile.key) ? 'found' : 'missing'}`}>{customIcon(tile.key) ? 'in use' : '-'}</span>
-					</div>
-				))}
-				<div class="fork-probe__section">Launch commands (tested on an LG C3)</div>
-				{PROBE_TARGETS.map((p, j) => {
-					const i = tiles.length + j;
-					return (
-						<div key={'l' + j} class={`fork-probe__row${i === at ? ' fork-probe__row--at' : ''}`} onMouseEnter={() => setAt(i)} onClick={() => launch(j)}>
-							<span class="fork-probe__group">{p.group}</span>
-							<span class="fork-probe__id">{describeTarget(p.target)}</span>
-							<span class="fork-probe__result">{result[j]}</span>
-						</div>
-					);
-				})}
-			</div>
-		</div>
-	);
-}

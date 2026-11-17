@@ -198,7 +198,7 @@ Find `weight: c.weight === 300 ||` and change it to `weight: c.weight === 200 ||
 
 These never conflict and need nothing:
 
-- `src/fork/` (all files: language, fonts, buttons, vignette, opacity veil, custom icons, test page)
+- `src/fork/` (all files: language, fonts, buttons, vignette, opacity veil, custom icons)
 - `src/assets/*-greek-*.woff2` (7 files)
 - `public/custom-icons/` (your custom tile icons)
 - `docs/languages/packs/el.json`

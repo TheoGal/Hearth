@@ -31,11 +31,6 @@ export function customIcon (id: string): string | undefined {
 	return found[id];
 }
 
-/** The file names Hearth looks for, for the test page. */
-export function iconFileNames (id: string): string {
-	return EXTENSIONS.map((e) => id + '.' + e).join(' or ');
-}
-
 /** Looks for every ID's picture; resolves true when what was found changed. */
 export function scanCustomIcons (ids: string[]): Promise<boolean> {
 	const stamp = Date.now();

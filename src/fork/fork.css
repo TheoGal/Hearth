@@ -1,4 +1,4 @@
-/* Fork additions: vignette, LG Home style buttons, app ID test page. */
+/* Fork additions: vignette, LG Home style buttons, extra fonts. */
 
 /* Clear in the middle, darkening from about half way out to 40% black in the corners (smooth, many stops). */
 .fork-vignette {
@@ -39,40 +39,6 @@
 	-webkit-transform: scale(1.08); transform: scale(1.08);
 	box-shadow: 0 4px 18px rgba(0, 0, 0, 0.45);
 }
-
-/* Test page */
-.fork-probe {
-	position: absolute;
-	left: 120px; top: 60px; right: 120px; bottom: 60px;
-	background: rgba(10, 10, 10, 0.96);
-	border: 2px solid rgba(255, 255, 255, 0.25);
-	border-radius: 20px;
-	padding: 30px 40px;
-	color: #fff;
-	z-index: 20;
-	display: -webkit-flex; display: flex;
-	-webkit-flex-direction: column; flex-direction: column;
-}
-.fork-probe__title { font-size: 36px; margin-bottom: 6px; }
-.fork-probe__hint { font-size: 20px; opacity: 0.7; margin-bottom: 18px; }
-.fork-probe__list { -webkit-flex: 1; flex: 1; overflow: hidden; }
-.fork-probe__row {
-	display: -webkit-flex; display: flex;
-	-webkit-align-items: center; align-items: center;
-	padding: 6px 14px;
-	border-radius: 10px;
-	font-size: 22px;
-	line-height: 1.3;
-}
-.fork-probe__row--at { background: #fff; color: #000; }
-.fork-probe__section { font-size: 22px; margin: 22px 14px 8px; opacity: 0.8; }
-.fork-probe__group { width: 260px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; padding-right: 16px; -webkit-flex: none; flex: none; opacity: 0.7; }
-.fork-probe__id { -webkit-flex: 1; flex: 1; font-family: 'Roboto Mono', monospace; font-size: 20px; }
-.fork-probe__status { width: 120px; white-space: nowrap; -webkit-flex: none; flex: none; text-align: right; }
-.fork-probe__status--found { color: #2ecc71; }
-.fork-probe__row--at .fork-probe__status--found { color: #0a7d3b; }
-.fork-probe__status--missing { opacity: 0.5; }
-.fork-probe__result { width: 330px; -webkit-flex: none; flex: none; text-align: right; font-size: 18px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 
 /* Fork: four extra widget / app name fonts that have Greek letters (from Fontsource 5.3, SIL Open Font License).
    Each has a Latin file and a Greek file; the Greek one is fetched only when a Greek letter is drawn. */
