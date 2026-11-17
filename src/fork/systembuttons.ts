@@ -14,17 +14,13 @@ export interface SystemButton {
 
 /** Top to bottom, as on LG Home. */
 export const SYSTEM_BUTTONS: SystemButton[] = [
-	{key: 'account', label: 'LG Account', targets: [
-		{id: 'com.webos.app.accountmanager'}, {id: 'com.webos.app.lgaccount'}, {id: 'com.webos.app.membership'}
-	]},
+	{key: 'account', label: 'LG Account', targets: [{id: 'com.webos.app.lgaccount'}]},
 	{key: 'notifications', label: 'Notifications', targets: [{id: 'com.webos.app.notificationcenter'}]},
 	{key: 'quicksettings', label: 'Quick Settings', targets: [{id: 'com.webos.app.quicksettings'}]},
 	{key: 'search', label: 'Search', targets: [
 		{id: 'com.webos.app.voice', params: {activateType: 'mrcu', launchMode: 'vkb'}}, {id: 'com.webos.app.search'}
 	]},
-	{key: 'guide', label: 'TV program', targets: [
-		{id: 'com.webos.app.tvguide'}, {id: 'com.webos.app.epg'}, {id: 'com.webos.app.livemenu', params: {activateType: 'channels'}}
-	]}
+	{key: 'guide', label: 'TV program', targets: [{id: 'com.webos.app.livemenu', params: {activateType: 'guide'}}]}
 ];
 
 export const LAST_BUTTON = SYSTEM_BUTTONS.length - 1;
@@ -57,7 +53,7 @@ export function buttonKey (key: string, current: number, atTopRow: boolean): num
 }
 
 /** Every app ID worth trying, for the test page (long-press OK on any button). */
-export const PROBE_TARGETS: {group: string; target: LaunchTarget}[] = [
+const PROBE_LIST: {group: string; target: LaunchTarget}[] = [
 	...['com.webos.app.accountmanager', 'com.webos.app.lgaccount', 'com.webos.app.membership', 'com.webos.app.account',
 		'com.webos.app.accountcenter', 'com.webos.app.profile', 'com.webos.app.userprofile', 'com.webos.app.login',
 		'com.webos.app.signin', 'com.lge.app.accountmanager', 'com.webos.app.lgemembership', 'com.webos.app.myaccount']
@@ -71,11 +67,16 @@ export const PROBE_TARGETS: {group: string; target: LaunchTarget}[] = [
 		.map((id) => ({group: 'Search', target: {id}})),
 	...['com.webos.app.tvguide', 'com.webos.app.epg', 'com.webos.app.programguide', 'com.webos.app.channelguide',
 		'com.webos.app.tvprogram', 'com.webos.app.guide'].map((id) => ({group: 'TV program', target: {id}})),
-	{group: 'TV program', target: {id: 'com.webos.app.livemenu', params: {activateType: 'channels'}}},
+	...['guide', 'channels', 'epg', 'tvguide', 'program', 'programme', 'schedule', 'guides', 'tvGuide', 'programGuide']
+		.map((a) => ({group: 'TV program', target: {id: 'com.webos.app.livemenu', params: {activateType: a}}})),
+	{group: 'TV program', target: {id: 'com.webos.app.livemenu'}},
 	{group: 'TV program', target: {id: 'com.webos.app.livetv', params: {activateType: 'guide'}}},
 	{group: 'Known', target: {id: 'com.webos.app.notificationcenter'}},
 	{group: 'Known', target: {id: 'com.webos.app.quicksettings'}}
 ];
+
+/** TV program lines first (the ones still being tested). */
+export const PROBE_TARGETS = PROBE_LIST.filter((p) => p.group === 'TV program').concat(PROBE_LIST.filter((p) => p.group !== 'TV program'));
 
 export function describeTarget (t: LaunchTarget): string {
 	return t.params ? `${t.id} ${JSON.stringify(t.params)}` : t.id;
