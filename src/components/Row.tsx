@@ -74,7 +74,9 @@ export function Row ({label, items, focused, selected, emptyText, onSelect, onAc
 		const n = live.current.count;
 		if (!vp || !tr || !n || x < 0) return -1;
 		const k = vp.getBoundingClientRect().width / (vp.offsetWidth || 1) || 1;   // fit scale (#47): screen px per layout px
-		return clamp(Math.floor(((x - tr.getBoundingClientRect().left) / k + tileGap / 2) / step), 0, n - 1);
+		const first = tr.firstElementChild as HTMLElement | null;   // fork: a centred row starts at its first tile, not at the track's edge
+		const left = (first || tr).getBoundingClientRect().left;
+		return clamp(Math.floor(((x - left) / k + tileGap / 2) / step), 0, n - 1);
 	};
 	const endFree = (how: 'pointer' | 'end' | 'none') => {
 		const f = free.current;

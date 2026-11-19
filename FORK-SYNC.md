@@ -41,6 +41,7 @@ Rules per file:
 | `src/lib/storage.ts` | Take Hearth's new version, then re-apply fix G below. |
 | `src/lib/tiles.ts` | Take Hearth's new version, then re-apply fix H below. |
 | `src/components/Wallpaper.tsx` | Take Hearth's new version, then re-apply fix I below. |
+| `src/components/Row.tsx` | Take Hearth's new version, then re-apply fix J below. |
 | `src/screens/Home.tsx` | Take Hearth's new version, then ask Claude: "re-apply the fork hooks in `src/screens/Home.tsx` of TheoGal/Hearth" (too many small lines to do by hand). |
 | `src/theme/global.css` | Keep **both** versions: Hearth's lines and the lines marked `/* Fork: ... */`. Delete only the marker lines. |
 | `src/config/bundledlanguages.ts` | Take Hearth's version. |
@@ -181,6 +182,22 @@ Find `weight: c.weight === 300 ||` and change it to `weight: c.weight === 200 ||
    		<div class={`wallpaper wallpaper--bare${fit ? ' wallpaper--fit' : ''}${vars.cls ? ' ' + vars.cls : ''}`} aria-hidden="true" ref={wrap} style={vars.css || undefined}>
    ```
 
+### Fix J: `src/components/Row.tsx`
+
+In `tileAt`, find:
+
+```ts
+		return clamp(Math.floor(((x - tr.getBoundingClientRect().left) / k + tileGap / 2) / step), 0, n - 1);
+```
+
+and change it to:
+
+```ts
+		const first = tr.firstElementChild as HTMLElement | null;   // fork: a centred row starts at its first tile, not at the track's edge
+		const left = (first || tr).getBoundingClientRect().left;
+		return clamp(Math.floor(((x - left) / k + tileGap / 2) / step), 0, n - 1);
+```
+
 ## 3. Check the build
 
 1. Open the **Actions** tab. Wait for **Build IPK** to finish.
@@ -191,7 +208,7 @@ Find `weight: c.weight === 300 ||` and change it to `weight: c.weight === 200 ||
 
 1. **New English texts:** Hearth's new texts show in English while the menus are in Greek. Ask Claude: "translate the missing keys of `docs/languages/packs/el.json` in TheoGal/Hearth".
 2. **New fonts:** if the new Hearth added fonts to the Widget font list, ask Claude: "check if Hearth's new fonts have Greek letters and update `src/fork/greekfonts.ts`".
-3. **Fixed by Hearth:** if Hearth fixed the built-in photo opacity or the Thin weight itself, ask Claude to remove fixes G or I and the opacity lines of fix E.
+3. **Fixed by Hearth:** if Hearth fixed the built-in photo opacity or the Thin weight itself, ask Claude to remove fixes G or I and the opacity lines of fix E. Same for the pointer highlight: if Hearth fixed it, fix J can go.
 4. **Weather city:** if the city name turned back to English, search for the city again and pick it.
 
 ## Files that belong to this fork only

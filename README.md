@@ -18,6 +18,7 @@ All changes are tested on an LG C3 that is **not rooted**.
 8. **Wallpaper opacity works for the built-in photos.** The "Wallpaper: opacity" setting now also dims the built-in photos and the built-in photo slideshow.
 9. **Thin weight is kept.** The Thin font weight no longer turns back into Regular after Hearth restarts.
 10. **Custom tile icons.** Upload a PNG or JPG to [`public/custom-icons/`](public/custom-icons/) named after the app or input ID (for example `netflix.png`, or `com.webos.app.hdmi1.png` for HDMI 1) and it replaces that tile's icon in the next build. No root needed.
+11. **Pointer highlights the right icon.** When all the icons fit on screen (the row is centered), resting the pointer on an icon highlights that icon, not the one to its right.
 
 ## Builds
 
